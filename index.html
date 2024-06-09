@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Camiones</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #333; /* Color de la pista */
+            margin: 0;
+        }
+        #game-container {
+            position: relative;
+            width: 1000px; /* Ampliado para incluir la zona de pasto y estacionamiento */
+            height: 800px;
+            background-color: #333; /* Color de la pista */
+            border: 2px solid #000;
+            overflow: hidden;
+        }
+        #track {
+            position: absolute;
+            width: 600px;
+            height: 100%;
+            left: 200px; /* Ajustado para dejar espacio para la zona de pasto a la izquierda */
+            background-color: #333;
+            border-left: 5px solid white; /* Línea gruesa blanca */
+            border-right: 5px solid white; /* Línea gruesa blanca */
+        }
+        .truck {
+            position: absolute;
+            width: 90px;
+            height: 180px;
+            background-size: cover;
+            z-index: 2; /* Sobre todo el resto */
+            transform-origin: center;
+        }
+        .line {
+            position: absolute;
+            width: 10px;
+            height: 50px;
+            background-color: yellow;
+            left: 295px; /* Centrado en el medio de un contenedor de 600px de ancho */
+        }
+        .sign {
+            position: absolute;
+            width: 100px; /* Aumentado el tamaño */
+            height: 100px; /* Aumentado el tamaño */
+        }
+        .traffic-light {
+            position: absolute;
+            width: 40px;
+            height: 120px;
+            background-color: black;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 3; /* Sobre el rectángulo blanco */
+        }
+        .light {
+            width: 30px;
+            height: 30px;
+            background-color: grey;
+            border-radius: 50%;
+        }
+        .red-light {
+            background-color: red;
+        }
+        .green-light {
+            background-color: green;
+        }
+        .stop-area {
+            position: absolute;
+            width: 600px; /* Ampliado para cubrir toda la pista */
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0); /* Fondo blanco con transparencia */
+            top: 50%;
+            left: 0; /* Cubriendo toda la pista */
+            transform: translateY(-50%);
+            z-index: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .zebra-line {
+            width: 30px; /* Aumentando el ancho de las líneas de cebra */
+            height: 100px;
+            background-color: white;
+            margin: 0 5px; /* Espaciado entre las líneas de cebra */
+        }
+        #parking {
+            position: absolute;
+            width: 200px;
+            height: 100%; /* Ampliado para cubrir de la esquina superior a la inferior */
+            right: 0;
+            background-color: #4B3621; /* Mismo color que la pista */
+            border-left: 5px solid white; /* Líneas anchas de color blanco */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .parked-truck {
+            width: 150px;
+            height: 75px;
+            background-size: cover;
+        }
+        #grass {
+            position: absolute;
+            width: 200px;
+            height: 100%;
+            left: 0;
+            background-color: #2e8b57; /* Color de pasto */
+            border-right: 5px solid white; /* Línea blanca que separa el pasto de la pista */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .tree {
+            width: 100px;
+            height: 100px;
+            background-size: cover;
+        }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            right: 700px;
+            display: flex;
+            flex-direction: column;
+            z-index: 4; /* Sobre todo el resto */
+        }
+        .arrow {
+            width: 80px;
+            height: 80px;
+            background-size: cover;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .arrow.selected {
+            background-color: rgba(255, 255, 255, 0);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="grass">
+            <img class="tree" src="tree.png" alt="Árbol 1">
+            <img class="tree" src="tree.png" alt="Árbol 2">
+            <img class="tree" src="tree.png" alt="Árbol 3">
+            <img class="tree" src="tree.png" alt="Árbol 4">
+        </div>
+        <div id="track">
+            <img id="truck" class="truck" src="tolva3.png" alt="Camión">
+            <div class="line" style="top: 100px;"></div>
+            <div class="line" style="top: 300px;"></div>
+            <div class="line" style="top: 500px;"></div>
+            <div class="line" style="top: 700px;"></div>
+
+            <!-- Mover las señales de tráfico más a la derecha -->
+            <img src="speed.png" class="sign" style="top: 150px; left: -90px;">
+            <img src="speed.png" class="sign" style="top: 550px; left: -90px;">
+
+            <!-- Añadiendo un semáforo -->
+            <div id="traffic-light" class="traffic-light">
+                <div id="red-light" class="light red-light"></div>
+                <div id="green-light" class="light"></div>
+            </div>
+
+            <!-- Añadiendo área de detención con paso de cebra -->
+            <div id="stop-area" class="stop-area">
+                <div class="zebra-line"></div>
+                <div class="zebra-line"></div>
+                <div class="zebra-line"></div>
+                <div class="zebra-line"></div>
+                <div class="zebra-line"></div>
+                <div class="zebra-line"></div>
+            </div>
+        </div>
+        <!-- Zona de estacionamiento -->
+        <div id="parking">
+            <img class="parked-truck" src="grua.png" alt="Camión Estacionado 1">
+            <img class="parked-truck" src="retro.png" alt="Camión Estacionado 2">
+            <img class="parked-truck" src="camion.png" alt="Camión Estacionado 3">
+        </div>
+        <!-- Controles -->
+        <div id="controls">
+            <img id="up-arrow" class="arrow" src="arrow-up.png" alt="Flecha Arriba">
+            <img id="down-arrow" class="arrow" src="arrow-up.png" alt="Flecha Abajo" style="transform: rotate(180deg);">
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
