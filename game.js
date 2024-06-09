@@ -65,26 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         moveInterval = null;
     }
 
-    function addTouchListeners(element, direction) {
-        element.addEventListener('touchstart', () => {
-            element.classList.add('selected');
-            element.src = direction === 'up' ? upArrowPressedImage : downArrowPressedImage;
-            startMoving(direction);
-        });
-
-        element.addEventListener('touchend', () => {
-            element.classList.remove('selected');
-            element.src = direction === 'up' ? upArrowImage : downArrowImage;
-            stopMoving();
-        });
-
-        element.addEventListener('touchcancel', () => {
-            element.classList.remove('selected');
-            element.src = direction === 'up' ? upArrowImage : downArrowImage;
-            stopMoving();
-        });
-    }
-
     upArrow.addEventListener('mousedown', () => {
         upArrow.classList.add('selected');
         upArrow.src = upArrowPressedImage;  // Cambiar a la imagen de flecha arriba presionada
@@ -120,9 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         downArrow.src = downArrowImage;  // Revertir a la imagen original de flecha abajo
         stopMoving();
     });
-
-    addTouchListeners(upArrow, 'up');
-    addTouchListeners(downArrow, 'down');
 
     document.addEventListener('keydown', (event) => {
         let newTop = position.top;
